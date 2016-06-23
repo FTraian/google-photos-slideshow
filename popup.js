@@ -14,16 +14,24 @@ function injectTheScript() {
 };
 
 function startslideshow() {
-    intervalId = injectTheScript();
+    if(typeof intervalId !== "undefined" && intervalId == -1) {
+        injectTheScript();
+        document.getElementById("startslideshow").disabled = true;
+        document.getElementById("stopslideshow").disabled = false;
+    }
 };
 
 function stopslideshow() {
-    if(intervalId != -1) {
+    if(typeof intervalId !== "undefined" && intervalId != -1) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.executeScript(tabs[0].id, {
                     code: 'clearInterval(intervalId);'
                 }); 
         });
+
+        document.getElementById("startslideshow").disabled = false;
+        document.getElementById("stopslideshow").disabled = true;
+        intervalId = -1;
     }
 };
 
